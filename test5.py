@@ -1,12 +1,16 @@
-
-import numpy as np
+import subprocess
 import cv2
+import numpy as np 
 
+web = 'udp://' UDP multicast link here
+subprocess.call(['ffmpeg', '-i', web, '-vf', "select='eq(pict_type\,I)+eq(pict_type\,P)'","-vframes","1","-y",'thump.jpg'])
+from datetime import datetime
+startTime= datetime.now()
 
 
 MIN_MATCH_COUNT = 5
 
-img1 = cv2.imread('Template.png')# anh_logo
+img1 = cv2.imread('thump.jpg')# anh_logo
 img2 = cv2.imread('result.png') # anh_muon_xet
 
 img1= cv2.cvtColor(img1,cv2.COLOR_BGR2GRAY)
@@ -34,6 +38,9 @@ for m,n in matches:
 
 if len(good)>MIN_MATCH_COUNT:
     print ("we have {} matches".format(len(good)))
-    print("We found it")
+    print("We found logo FPT")
 else:
     print ("Not enough matches are found - %d/%d" % (len(good),MIN_MATCH_COUNT))
+timeElapsed=datetime.now()-startTime
+
+print('Time elpased (hh:mm:ss.ms) {}'.format(timeElapsed))
