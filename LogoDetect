@@ -17,11 +17,11 @@ with open('ip.csv', 'r') as csv_file:
         web2 = 'udp://@{}?pkt_size=1480'.format(web)
         print(web2)
         proc = subprocess.Popen(
-            ['ffmpeg', '-i', web2, '-vf', "select='eq(pict_type\,I)+eq(pict_type\,P)'", "-vframes", "1", "-y",
+            ['ffmpeg', '-i', web2, '-vf', "select='eq(pict_type\,PICT_TYPE_I)'", "-vframes", "1", "-y",
              'thump.png']) #getting png frame from here
         time.sleep(10) #time out is 10s
         if (os.path.isfile('thump.png') == True): #check if png frame exist, if exists,do logo detect, if not killing process and move on
-            MIN_MATCH_COUNT = 5    #logo detecting start here
+            MIN_MATCH_COUNT = 7    #logo detecting start here
 
             img1 = cv2.imread('Template.png')  # anh_logo
             img2 = cv2.imread('thump.png')  # anh_muon_xet
