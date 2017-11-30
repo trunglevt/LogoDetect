@@ -7,6 +7,9 @@ import numpy as np
 import os.path
 import os
 
+f = open("ip2.csv", "w")
+f.truncate() # clear the result file first
+f.close()
 with open('ip.csv', 'r') as csv_file:
     csv_reader = csv.DictReader(csv_file)
     for line in csv_reader:
@@ -15,12 +18,12 @@ with open('ip.csv', 'r') as csv_file:
         print(web2)
         proc = subprocess.Popen(
             ['ffmpeg', '-i', web2, '-vf', "select='eq(pict_type\,I)+eq(pict_type\,P)'", "-vframes", "1", "-y",
-             'thump.jpg']) #calling subprocess
-        time.sleep(10) #wait 10s here
-        if (os.path.isfile('thump.jpg') == True): #check if it produces a keyframe, if not kill process and move to another IP 
-            MIN_MATCH_COUNT = 5
+             'thump.png']) #getting png frame from here
+        time.sleep(10) #time out is 10s
+        if (os.path.isfile('thump.png') == True): #check if png frame exist, if exists,do logo detect, if not killing process and move on
+            MIN_MATCH_COUNT = 5    #logo detecting start here
 
-            img1 = cv2.imread('thump.jpg')  # anh_logo
+            img1 = cv2.imread('thump.png')  # anh_logo
             img2 = cv2.imread('result.png')  # anh_muon_xet
 
             img1 = cv2.cvtColor(img1, cv2.COLOR_BGR2GRAY)
@@ -47,21 +50,22 @@ with open('ip.csv', 'r') as csv_file:
             if len(good) > MIN_MATCH_COUNT:
                 print("we have {} matches".format(len(good)))
                 print("We found logo FPT")
-                os.remove('thump.jpg')     #right now, file is removed so storage will not be affected
+                os.remove('thump.png') #right now, i try to make sure storage is not affected.
 
-                with open('ip2.csv', 'a') as newFile: # the result will be put in here
+                with open('ip2.csv', 'a') as newFile: # write result to file
                     newFileWriter = csv.writer(newFile)
-                    newFileWriter.writerow(['yes'])
+                    newFileWriter.writerow([web,'yes'])
 
             else:
                 print("Not enough matches are found - %d/%d" % (len(good), MIN_MATCH_COUNT))
-                os.remove('thump.jpg')
+                os.remove('thump.png')
                 with open('ip2.csv', 'a') as newFile:
                     newFileWriter = csv.writer(newFile)
-                    newFileWriter.writerow(['no'])
+                    newFileWriter.writerow([web,'no'])
         else:
             with open('ip2.csv', 'a') as newFile:
                 newFileWriter = csv.writer(newFile)
-                newFileWriter.writerow(['not available'])
-            proc.kill()  #killing process and move on 
+                newFileWriter.writerow([web,'not available'])
+            proc.kill() # killling process and moving on if cant find thump.png
 csv_file.close()
+
