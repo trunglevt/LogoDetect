@@ -23,8 +23,8 @@ with open('ip.csv', 'r') as csv_file:
         if (os.path.isfile('thump.png') == True): #check if png frame exist, if exists,do logo detect, if not killing process and move on
             MIN_MATCH_COUNT = 5    #logo detecting start here
 
-            img1 = cv2.imread('thump.png')  # anh_logo
-            img2 = cv2.imread('result.png')  # anh_muon_xet
+            img1 = cv2.imread('Template.png')  # anh_logo
+            img2 = cv2.imread('thump.png')  # anh_muon_xet
 
             img1 = cv2.cvtColor(img1, cv2.COLOR_BGR2GRAY)
             img2 = cv2.cvtColor(img2, cv2.COLOR_BGR2GRAY)
